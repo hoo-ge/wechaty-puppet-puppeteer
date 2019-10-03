@@ -13,8 +13,8 @@
 
 Wechaty Puppet for Puppeteer
 
-* This repository is a sub module of Wechaty. See: <https://github.com/Chatie/wechaty-puppet-puppeteer/issues/1>
-* Source code before moved to here can be found at Wechaty repository: [Wechaty/src/puppet-puppeteer#a2c56e6](https://github.com/Chatie/wechaty/tree/a2c56e62642f9004243e3ad8e9c9d0b0dd1a4761/src/puppet-puppeteer)
+- This repository is a sub module of Wechaty. See: <https://github.com/Chatie/wechaty-puppet-puppeteer/issues/1>
+- Source code before moved to here can be found at Wechaty repository: [Wechaty/src/puppet-puppeteer#a2c56e6](https://github.com/Chatie/wechaty/tree/a2c56e62642f9004243e3ad8e9c9d0b0dd1a4761/src/puppet-puppeteer)
 
 ## KNOWN LIMITATIONS
 
@@ -30,25 +30,58 @@ Learn more about the Puppet at [Wechaty wiki: Puppet](https://github.com/Chatie/
 
 Cause `storage.googleapis.com` is blocked in mainland china, you'd better config by following guide.
 
-### `npm` user
+### 1. Linux & Mac
 
-```bash
-npm config set registry https://registry.npm.taobao.org
-npm config set disturl https://npm.taobao.org/dist
-npm config set puppeteer_download_host https://npm.taobao.org/mirrors
+```shell
+PUPPETEER_DOWNLOAD_HOST=https://npm.taobao.org/mirrors npm install wechaty-puppet-puppeteer
 ```
 
-then you can check your `$HOME/.npmrc`
+### 2. Windows
 
-### `yarn` user
-
-```bash
-yarn config set registry https://registry.npm.taobao.org
-yarn config set disturl https://npm.taobao.org/dist
-yarn config set puppeteer_download_host https://npm.taobao.org/mirrors
+```shell
+SET PUPPETEER_DOWNLOAD_HOST=https://npm.taobao.org/mirrors npm install wechaty-puppet-puppeteer
 ```
 
-then you can check your `$HOME/.yarnrc`
+Learn more from <https://github.com/GoogleChrome/puppeteer/issues/1597#issuecomment-351945645>
+
+## How to set puppeteer launchOptions?
+
+An example of adding executablePath to puppeteer.launch():
+
+```js
+const bot = new Wechaty({
+  name: 'mybot',
+  puppet: 'wechaty-puppet-puppeteer',
+  // ...
+  puppetOptions: {
+    endpoint: '<executablePath>'
+  }
+});
+
+// or
+const bot = new Wechaty({
+  name: 'mybot',
+  puppet: 'wechaty-puppet-puppeteer',
+  // ...
+  puppetOptions: {
+    launchOptions: {
+      executablePath: '<executablePath>',
+      // ... others launchOptions, see: https://github.com/GoogleChrome/puppeteer/blob/v1.18.1/docs/api.md#puppeteerlaunchoptions
+    }
+  }
+});
+```
+
+We use [stealth](https://www.npmjs.com/package/puppeteer-extra-plugin-stealth) to make puppeteer more like a normal browser, if you want to disabled it, just set the `WECHATY_PUPPET_PUPPETEER_STEALTHLESS` environment variable to `1`. eg. `WECHATY_PUPPET_PUPPETEER_STEALTHLESS=1 ts-node your-bot.ts`
+
+## puppetOptions
+
+| Option        |  value  | default value | description                                                                                                                 |
+| ------------- | :-----: | :-----------: | :-------------------------------------------------------------------------------------------------------------------------- |
+| endpoint      | string  |       -       | puppeteerlaunchoptions.executablePath                                                                                       |
+| head          | boolean |     false     | puppeteerlaunchoptions.headless                                                                                             |
+| launchOptions | object  |       -       | same to [puppeteerlaunchoptions](https://github.com/GoogleChrome/puppeteer/blob/v1.18.1/docs/api.md#puppeteerlaunchoptions) |
+| stealthless   | boolean |     false     | disabled [puppeteer-extra-plugin-stealth](https://www.npmjs.com/package/puppeteer-extra-plugin-stealth) or not              |
 
 ## HISTORY
 
@@ -63,6 +96,18 @@ then you can check your `$HOME/.yarnrc`
 
 1. Promote to solo package: `wechaty-puppet-puppeteer`
 
+## FAQ
+
+### 1. chrome-linux/chrome: error while loading shared libraries: libX11.so.6: cannot open shared object file: No such file or directory
+
+You need to be able to run chrome in your Linux environment. If you are using Ubuntu Linux:
+
+```sh
+sudo apt-get install libxss1
+```
+
+See: <https://github.com/Chatie/wechaty/issues/1152>
+
 ## AUTHOR
 
 [Huan LI](http://linkedin.com/in/zixia) \<zixia@zixia.net\>
@@ -73,6 +118,6 @@ then you can check your `$HOME/.yarnrc`
 
 ## COPYRIGHT & LICENSE
 
-* Code & Docs © 2016-2019 Huan LI \<zixia@zixia.net\>
-* Code released under the Apache-2.0 License
-* Docs released under Creative Commons
+- Code & Docs © 2016-2019 Huan LI \<zixia@zixia.net\>
+- Code released under the Apache-2.0 License
+- Docs released under Creative Commons

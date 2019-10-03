@@ -1,9 +1,6 @@
-// tslint:disable:no-reference
-
 /// <reference path="./typings.d.ts" />
 
-import promiseRetry = require('promise-retry')
-import { WrapOptions } from 'retry'
+import { OperationOptions } from 'retry'
 
 import {
   // Brolog,
@@ -12,7 +9,9 @@ import {
 import { FileBox }  from 'file-box'
 import qrImage      from 'qr-image'
 
-// export const log = new Brolog()
+import { VERSION } from './version'
+
+import promiseRetry = require('promise-retry')
 
 export async function retry<T> (
   retryableFn: (
@@ -33,7 +32,7 @@ export async function retry<T> (
   const retries    = 9
   // const unref      = true
 
-  const retryOptions: WrapOptions = {
+  const retryOptions: OperationOptions = {
     factor,
     maxTimeout,
     minTimeout,
@@ -50,6 +49,12 @@ export function envHead (): boolean {
 
 }
 
+export function envStealthless (): boolean {
+  const KEY = 'WECHATY_PUPPET_PUPPETEER_STEALTHLESS'
+  return !!process.env[KEY]
+
+}
+
 export function qrCodeForChatie (): FileBox {
   const CHATIE_OFFICIAL_ACCOUNT_QRCODE = 'http://weixin.qq.com/r/qymXj7DEO_1ErfTs93y5'
   const name                           = 'qrcode-for-chatie.png'
@@ -61,14 +66,7 @@ export function qrCodeForChatie (): FileBox {
 
 export const MEMORY_SLOT = 'PUPPET_PUPPETEER'
 
-/**
- * VERSION
- */
-import readPkgUp from 'read-pkg-up'
-
-const pkg = readPkgUp.sync({ cwd: __dirname }).pkg
-export const VERSION = pkg.version
-
 export {
+  VERSION,
   log,
 }
